@@ -1,6 +1,6 @@
 *.ipynb
 *.pyc
-*.txt
+test*.*
 *~
 *#
 .DS_Store
