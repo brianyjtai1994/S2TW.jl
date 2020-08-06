@@ -44,6 +44,7 @@ function s2tw(lx::Lexer, s2tw::S2TW)
     ret = ""
 
     while peek_char(lx) != EOFChar
+        ret *= skip_char!(lx)
         ret *= accept_char!(lx, s2tw)
     end
 

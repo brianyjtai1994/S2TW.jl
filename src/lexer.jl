@@ -56,6 +56,8 @@ end
 function next_char!(lx::Lexer)
     lx.pos = lx.idx
     lx.idx = nextind(lx.str, lx.pos)
+
+    return lx.str[lx.pos]
 end
 
 function next_char!(lx::Lexer, rdx::Int)
@@ -73,7 +75,11 @@ end
 
 # skip the space-like char, @code_warntype
 function skip_char!(lx::Lexer)
+    ret = ""
+
     while isspace(peek_char(lx))
-        next_char!(lx)
+        ret *= next_char!(lx)
     end
+
+    return ret
 end
