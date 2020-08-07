@@ -35,7 +35,13 @@ function S2TW()
         三字[temp_arr[i, 1]] = temp_arr[i, 2]
     end
 
-    return S2TW(Dict{String, String}[字典, 二字, 三字])
+    四字 = Dict{String, String}()
+    temp_arr = readdlm("src/deps/用語/四字.txt", ',', String, comments=true, comment_char='#')
+    @inbounds @simd for i in axes(temp_arr, 1)
+        四字[temp_arr[i, 1]] = temp_arr[i, 2]
+    end
+
+    return S2TW(Dict{String, String}[字典, 二字, 三字, 四字])
 end
 
 s2tw(str::S) where S<:AbstractString = s2tw(Lexer(str), S2TW())
@@ -53,7 +59,7 @@ end
 
 # check if next char is one of among the valid ones
 function accept_char!(lx::Lexer, s2tw::S2TW)
-    rdx       = 3
+    rdx       = 4
     trial     = peek_char(lx, rdx)
     not_found = !haskey(s2tw.dep[rdx], trial)
 
