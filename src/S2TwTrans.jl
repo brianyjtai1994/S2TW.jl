@@ -44,42 +44,43 @@ function S2TWConfig()
     return S2TWConfig(Dict{String, String}[字典, 二字, 三字, 四字])
 end
 
-s2tw(str::S) where S<:AbstractString = s2tw(Lexer(str), S2TWConfig())
+s2tw(str::S)                    where S<:AbstractString = s2tw(str, S2TWConfig())
+s2tw(str::S, s2twc::S2TWConfig) where S<:AbstractString = s2tw(Lexer(str), s2twc)
 
-function s2tw(lx::Lexer, s2tw::S2TWConfig)
+function s2tw(lx::Lexer, s2twc::S2TWConfig)
     ret = ""
 
     while peek_char(lx) != EOFChar
+        ret *= accept_char!(lx, s2twc)
         ret *= skip_char!(lx)
-        ret *= accept_char!(lx, s2tw)
     end
 
     return ret
 end
 
 # check if next char is one of among the valid ones
-function accept_char!(lx::Lexer, s2tw::S2TWConfig)
+function accept_char!(lx::Lexer, s2twc::S2TWConfig)
     rdx       = 4
     trial     = peek_char(lx, rdx)
-    not_found = !haskey(s2tw.dep[rdx], trial)
+    not_found = !haskey(s2twc.dep[rdx], trial)
 
     rdx -= 1
 
     while not_found && rdx > 0
         trial     = peek_char(lx, rdx)
-        not_found = !haskey(s2tw.dep[rdx], trial)
+        not_found = !haskey(s2twc.dep[rdx], trial)
 
         rdx -= 1
     end
 
     next_char!(lx, rdx+1)
 
-    return s2tw_convert(trial, s2tw, rdx+1)
+    return s2tw_convert(trial, s2twc, rdx+1)
 end
 
-function s2tw_convert(str::S, s2tw::S2TWConfig, rdx::Int) where S<:AbstractString
-    if haskey(s2tw.dep[rdx], str)
-        return s2tw.dep[rdx][str]
+function s2tw_convert(str::S, s2twc::S2TWConfig, rdx::Int) where S<:AbstractString
+    if haskey(s2twc.dep[rdx], str)
+        return s2twc.dep[rdx][str]
     else
         return str
     end
