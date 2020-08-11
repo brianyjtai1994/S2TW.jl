@@ -11,37 +11,47 @@ include("lexer.jl")
 struct S2TwConfig{S} <: AbstractS2TW dep::Vector{Dict{S, S}} end
 
 function S2TwConfig()
-    字典 = Dict{String, String}()
+    字典_dict = Dict{String, String}()
 
-    @inbounds for deps_path in ("src/deps/字典/", "src/deps/異體/")
-        for filename in readdir(deps_path)
-            temp_arr = readdlm(deps_path * filename, ',', String, comments=true, comment_char='#')
+    字典_list = ["ㄅ.txt", "ㄆ.txt", "ㄇ.txt", "ㄈ.txt",
+                "ㄉ.txt", "ㄊ.txt", "ㄋ.txt", "ㄌ.txt",
+                "ㄍ.txt", "ㄎ.txt", "ㄏ.txt", "ㄐ.txt",
+                "ㄑ.txt", "ㄒ.txt", "ㄓ.txt", "ㄔ.txt",
+                "ㄕ.txt", "ㄖ.txt", "ㄗ.txt", "ㄘ.txt",
+                "ㄙ.txt", "ㄧ.txt", "ㄨ.txt", "ㄩ.txt",
+                "ㄚ-ㄦ.txt", "異體.txt"]
 
-            @simd for i in axes(temp_arr, 1)
-                字典[temp_arr[i, 1]] = temp_arr[i, 2]
-            end
+    @inbounds @simd for i in eachindex(字典_list)
+        字典_list[i] = "src/deps/字典/" * 字典_list[i]
+    end
+
+    @inbounds for filename in 字典_list
+        temp_arr = readdlm(filename, ',', String, comments=true, comment_char='#')
+
+        @simd for i in axes(temp_arr, 1)
+            字典_dict[temp_arr[i, 1]] = temp_arr[i, 2]
         end
     end
 
-    二字 = Dict{String, String}()
+    二字_dict = Dict{String, String}()
     temp_arr = readdlm("src/deps/用語/二字.txt", ',', String, comments=true, comment_char='#')
     @inbounds @simd for i in axes(temp_arr, 1)
-        二字[temp_arr[i, 1]] = temp_arr[i, 2]
+        二字_dict[temp_arr[i, 1]] = temp_arr[i, 2]
     end
 
-    三字 = Dict{String, String}()
+    三字_dict = Dict{String, String}()
     temp_arr = readdlm("src/deps/用語/三字.txt", ',', String, comments=true, comment_char='#')
     @inbounds @simd for i in axes(temp_arr, 1)
-        三字[temp_arr[i, 1]] = temp_arr[i, 2]
+        三字_dict[temp_arr[i, 1]] = temp_arr[i, 2]
     end
 
-    四字 = Dict{String, String}()
+    四字_dict = Dict{String, String}()
     temp_arr = readdlm("src/deps/用語/四字.txt", ',', String, comments=true, comment_char='#')
     @inbounds @simd for i in axes(temp_arr, 1)
-        四字[temp_arr[i, 1]] = temp_arr[i, 2]
+        四字_dict[temp_arr[i, 1]] = temp_arr[i, 2]
     end
 
-    return S2TwConfig(Dict{String, String}[字典, 二字, 三字, 四字])
+    return S2TwConfig(Dict{String, String}[字典_dict, 二字_dict, 三字_dict, 四字_dict])
 end
 
 s2tw(str::S)                    where S<:AbstractString = s2tw(str, S2TwConfig())
