@@ -1,7 +1,7 @@
 name = "S2TwTrans"
 uuid = "5cf70722-ebfd-496e-996c-d9fcb5a97026"
 authors = ["brianyjtai1994 <brianyjtai1994@gmail.com>"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"

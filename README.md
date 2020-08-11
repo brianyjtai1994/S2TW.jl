@@ -12,7 +12,7 @@
 - 重複使用：
     為了避免重複讀取轉換表，可以先單獨載入對照表再轉換
     ```julia
-    s2tw_c = S2TWConfig() # 載入對照表
+    s2tw_c = S2TwConfig() # 載入對照表
     
     s2tw(str, s2tw_c)
     ```

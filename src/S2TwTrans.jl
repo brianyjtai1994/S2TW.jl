@@ -2,15 +2,15 @@ module S2TwTrans
 
 using DelimitedFiles
 
-export S2TWConfig, s2tw
+export S2TwConfig, s2tw
 
 abstract type AbstractS2TW end
 
 include("lexer.jl")
 
-struct S2TWConfig{S} <: AbstractS2TW dep::Vector{Dict{S, S}} end
+struct S2TwConfig{S} <: AbstractS2TW dep::Vector{Dict{S, S}} end
 
-function S2TWConfig()
+function S2TwConfig()
     字典 = Dict{String, String}()
 
     @inbounds for deps_path in ("src/deps/字典/", "src/deps/異體/")
@@ -41,13 +41,13 @@ function S2TWConfig()
         四字[temp_arr[i, 1]] = temp_arr[i, 2]
     end
 
-    return S2TWConfig(Dict{String, String}[字典, 二字, 三字, 四字])
+    return S2TwConfig(Dict{String, String}[字典, 二字, 三字, 四字])
 end
 
-s2tw(str::S)                    where S<:AbstractString = s2tw(str, S2TWConfig())
-s2tw(str::S, s2twc::S2TWConfig) where S<:AbstractString = s2tw(Lexer(str), s2twc)
+s2tw(str::S)                    where S<:AbstractString = s2tw(str, S2TwConfig())
+s2tw(str::S, s2twc::S2TwConfig) where S<:AbstractString = s2tw(Lexer(str), s2twc)
 
-function s2tw(lx::Lexer, s2twc::S2TWConfig)
+function s2tw(lx::Lexer, s2twc::S2TwConfig)
     ret = ""
 
     while peek_char(lx) != EOFChar
@@ -59,7 +59,7 @@ function s2tw(lx::Lexer, s2twc::S2TWConfig)
 end
 
 # check if next char is one of among the valid ones
-function accept_char!(lx::Lexer, s2twc::S2TWConfig)
+function accept_char!(lx::Lexer, s2twc::S2TwConfig)
     rdx       = 4
     trial     = peek_char(lx, rdx)
     not_found = !haskey(s2twc.dep[rdx], trial)
@@ -78,7 +78,7 @@ function accept_char!(lx::Lexer, s2twc::S2TWConfig)
     return s2tw_convert(trial, s2twc, rdx+1)
 end
 
-function s2tw_convert(str::S, s2twc::S2TWConfig, rdx::Int) where S<:AbstractString
+function s2tw_convert(str::S, s2twc::S2TwConfig, rdx::Int) where S<:AbstractString
     if haskey(s2twc.dep[rdx], str)
         return s2twc.dep[rdx][str]
     else
